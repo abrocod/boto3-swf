@@ -6,9 +6,9 @@ swf = boto3.client('swf')
 
 DOMAIN = "yourtestdomain"
 WORKFLOW = "yourtestworkflow"
-TASKNAME = "yourtaskname"
 VERSION = "0.1"
-TASKLIST = "testlist"
+DECISION_TASKLIST = "decision_tasklist"
+ACTIVITY_TASKLIST = "activity_tasklist"
 
 response = swf.start_workflow_execution(
   domain=DOMAIN,
@@ -18,7 +18,7 @@ response = swf.start_workflow_execution(
     "version": VERSION
   },
   taskList={
-      'name': TASKLIST
+      'name': DECISION_TASKLIST
   },
   input=''
 )

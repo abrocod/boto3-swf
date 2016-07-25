@@ -10,9 +10,9 @@ swf = boto3.client('swf', config=botoConfig)
 
 DOMAIN = "yourtestdomain"
 WORKFLOW = "yourtestworkflow"
-TASKNAME = "yourtaskname"
 VERSION = "0.1"
-TASKLIST = "testlist"
+DECISION_TASKLIST = "decision_tasklist"
+ACTIVITY_TASKLIST = "activity_tasklist"
 
 print "Listening for Decision Tasks"
 
@@ -20,7 +20,7 @@ while True:
 
   newTask = swf.poll_for_decision_task(
     domain=DOMAIN,
-    taskList={'name': TASKLIST},
+    taskList={'name': DECISION_TASKLIST},
     identity='decider-1',
     reverseOrder=False)
 
@@ -33,11 +33,13 @@ while True:
     lastEvent = eventHistory[-1]
 
     print '---- one iteration -----'
-    for _event in eventHistory:
-      print '[INFO]', json.dumps(_event)
+    # for _event in eventHistory:
+    #   print '[INFO]', _event
+    print '[LAST_EVENT] ', lastEvent
 
     if lastEvent['eventType'] == 'WorkflowExecutionStarted':
       print "Dispatching task to worker", newTask['workflowExecution'], newTask['workflowType']
+      
       swf.respond_decision_task_completed(
         taskToken=newTask['taskToken'],
         decisions=[
@@ -54,7 +56,7 @@ while True:
                 'scheduleToStartTimeout': 'NONE',
                 'startToCloseTimeout': 'NONE',
                 'heartbeatTimeout': 'NONE',
-                'taskList': {'name': TASKLIST},
+                'taskList': {'name': DECISION_TASKLIST},
             }
           }
         ]

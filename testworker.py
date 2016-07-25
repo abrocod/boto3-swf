@@ -10,9 +10,9 @@ swf = boto3.client('swf', config=botoConfig)
 
 DOMAIN = "yourtestdomain"
 WORKFLOW = "yourtestworkflow"
-TASKNAME = "yourtaskname"
 VERSION = "0.1"
-TASKLIST = "testlist"
+DECISION_TASKLIST = "decision_tasklist"
+ACTIVITY_TASKLIST = "activity_tasklist"
 
 print "Listening for Worker Tasks"
 
@@ -20,7 +20,7 @@ while True:
 
   task = swf.poll_for_activity_task(
     domain=DOMAIN,
-    taskList={'name': TASKLIST},
+    taskList={'name': ACTIVITY_TASKLIST},
     identity='worker-1')
 
   print '[INFO] ', json.dumps(task) 
